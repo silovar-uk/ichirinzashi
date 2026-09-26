@@ -25,6 +25,13 @@ const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const usedDates = (id) => Array.isArray(store.used?.[id]) ? store.used[id] : [];
 const isUsed = (id) => usedDates(id).length > 0;
 const byId = (id) => entries.find((entry) => entry.id === id);
+const addedAtMs = (entry) => {
+  const value = Date.parse(entry?.addedAt || `${entry?.date || '1970-01-01'}T00:00:00+09:00`);
+  return Number.isFinite(value) ? value : 0;
+};
+const compareAddedDesc = (a, b) => addedAtMs(b) - addedAtMs(a)
+  || String(b?.date || '').localeCompare(String(a?.date || ''))
+  || String(b?.id || '').localeCompare(String(a?.id || ''));
 
 function loadStore() {
   try {
@@ -273,12 +280,17 @@ function tanaHTML() {
     if (!groups.has(entry.functionTag)) groups.set(entry.functionTag, []);
     groups.get(entry.functionTag).push(entry);
   }
-  const shelves = [...groups.entries()].sort((a,b) => b[1].length - a[1].length || b[1][0].date.localeCompare(a[1][0].date));
+  const shelves = [...groups.entries()]
+    .map(([tag, list]) => [tag, [...list].sort(compareAddedDesc)])
+    .sort((a, b) => compareAddedDesc(a[1][0], b[1][0]));
   const usedN = entries.filter((entry) => isUsed(entry.id)).length;
   return `<section class="tana"><div class="tana-sum"><p><b>${entries.length}</b>ためた語</p><p class="used"><b>${usedN}</b>使った語</p></div><div class="shelves">${shelves.map(([tag, list]) => {
-    const siblings = list.flatMap((entry) => (entry.siblings || []).map((sibling) => ({ ...sibling, parent: entry.id })));
-    const stems = [...list.map((entry) => ({ word: entry.word, distance: entry.distance, id: entry.id, used: isUsed(entry.id), main: true })), ...siblings.map((sibling) => ({ word: sibling.word, distance: sibling.distance, id: sibling.parent }))].sort((a,b) => a.distance - b.distance || a.word.localeCompare(b.word, 'ja'));
-    return `<div class="shelf"><h2>${esc(tag)}<span>${list.length}語${siblings.length ? `・候補${siblings.length}` : ''}</span></h2><div class="shelf-row">${stems.map((stem) => `<a class="stem${stem.main ? '' : ' sib'}${stem.used ? ' used' : ''}" href="#/w/${encodeURIComponent(stem.id)}" title="時代距離 ${stem.distance}">${esc(stem.word)}</a>`).join('')}</div></div>`;
+    const stems = list.flatMap((entry) => [
+      { word: entry.word, distance: entry.distance, id: entry.id, used: isUsed(entry.id), main: true },
+      ...(entry.siblings || []).map((sibling) => ({ word: sibling.word, distance: sibling.distance, id: entry.id }))
+    ]);
+    const siblingsN = stems.length - list.length;
+    return `<div class="shelf"><h2>${esc(tag)}<span>${list.length}語${siblingsN ? `・候補${siblingsN}` : ''}</span></h2><div class="shelf-row">${stems.map((stem) => `<a class="stem${stem.main ? '' : ' sib'}${stem.used ? ' used' : ''}" href="#/w/${encodeURIComponent(stem.id)}" title="時代距離 ${stem.distance}">${esc(stem.word)}</a>`).join('')}</div></div>`;
   }).join('')}</div></section>`;
 }
 
