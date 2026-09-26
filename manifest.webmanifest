@@ -1,0 +1,12 @@
+{
+  "name": "一輪挿し",
+  "short_name": "一輪挿し",
+  "description": "一文に、一輪。近代文章語を毎朝ひとつ。",
+  "start_url": "./#/",
+  "display": "standalone",
+  "background_color": "#F1F2EE",
+  "theme_color": "#F1F2EE",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

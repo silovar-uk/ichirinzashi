@@ -1,0 +1,860 @@
+<meta charset="utf-8">
+<title>一輪挿し</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F1F2EE; --paper-2:#E8EAE4; --ink:#1F2124; --ink-2:#464A4E; --usuzumi:#61676C; --keisen:#D9DCD6;
+  --kikyo:#5654A2; --kikyo-soft:rgba(86,84,162,.12); --shu:#C0412B; --on-shu:#FBF7F2;
+  --mincho:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
+  --gothic:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","YuGothic",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#141619; --paper-2:#1B1E22; --ink:#E6E8E4; --ink-2:#BFC3C0; --usuzumi:#8C9296; --keisen:#2B2F34;
+    --kikyo:#A7A2EC; --kikyo-soft:rgba(167,162,236,.14); --shu:#E0735E; --on-shu:#1A1310;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141619; --paper-2:#1B1E22; --ink:#E6E8E4; --ink-2:#BFC3C0; --usuzumi:#8C9296; --keisen:#2B2F34;
+  --kikyo:#A7A2EC; --kikyo-soft:rgba(167,162,236,.14); --shu:#E0735E; --on-shu:#1A1310;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--gothic);font-size:15px;line-height:1.8;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:0 56px}
+@media (min-width:1180px){.wrap{max-width:1160px}}
+button{font:inherit;color:inherit}
+a{color:var(--kikyo)}
+:focus-visible{outline:2px solid var(--kikyo);outline-offset:3px;border-radius:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.label{margin:0 0 6px;font-size:12px;letter-spacing:.16em;color:var(--usuzumi);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.linkbtn{background:none;border:0;padding:6px 2px;color:var(--usuzumi);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:13px}
+.btn-ghost{border:1px solid var(--keisen);background:transparent;padding:6px 14px;border-radius:2px;font-size:13px;cursor:pointer;color:var(--ink-2);min-height:36px}
+.btn-ghost:hover{border-color:var(--ink-2)}
+em{font-style:normal;color:var(--kikyo);text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:5px}
+.empty{color:var(--usuzumi);font-size:14px;padding-block:24px}
+
+/* モックの操作 */
+.mockbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding-block:10px;border-bottom:1px dashed var(--keisen);font-size:12.5px;color:var(--usuzumi)}
+.mock-tag{font-weight:700;letter-spacing:.2em;color:var(--ink-2)}
+.seg{display:inline-flex;border:1px solid var(--keisen);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:5px 12px;cursor:pointer;color:var(--ink-2);font-size:12.5px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* 見出し */
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px 6px}
+.brand{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:4px 0;cursor:pointer;font-family:var(--mincho);font-size:19px;font-weight:600;letter-spacing:.16em;color:var(--ink)}
+.mark{width:17px;height:27px}
+.mark .vase{fill:none;stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round}
+.mark .stem-line{fill:none;stroke:var(--ink-2);stroke-width:1.2;stroke-linecap:round}
+.mark .bloom{fill:var(--kikyo)}
+.nav{display:flex;gap:2px}
+.nav button{background:none;border:0;border-bottom:1.5px solid transparent;padding:8px 10px;cursor:pointer;color:var(--ink-2);font-size:14px;letter-spacing:.1em}
+.nav button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* 今朝の一輪・語のページ */
+.eyebrow{margin:14px 0 4px;font-size:12.5px;letter-spacing:.12em;color:var(--usuzumi);font-variant-numeric:tabular-nums}
+.eyebrow b{font-weight:500;color:var(--ink);margin-left:.9em;letter-spacing:.22em}
+.late{margin:0 0 8px;font-size:13px;color:var(--usuzumi)}
+.back{margin-top:10px}
+.entry-grid{display:grid;gap:22px}
+.tanzaku-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;padding-block:14px 0}
+.tanzaku{margin:0;writing-mode:vertical-rl;height:300px;padding-inline:6px}
+.kotobagaki{font-family:var(--gothic);font-size:12.5px;line-height:1.6;letter-spacing:.14em;color:var(--usuzumi);padding-top:3.4em;margin-block-end:22px}
+.ichibun{margin:0;font-family:var(--mincho);font-size:25px;line-height:1.95;letter-spacing:.08em;color:var(--ink)}
+.slot{position:relative;white-space:nowrap;cursor:pointer;border-right:1.5px dotted var(--usuzumi);transition:color .3s}
+.slot::before{content:"";position:absolute;top:-.5em;right:-.5em;width:7px;height:7px;border-radius:50%;background:var(--kikyo);box-shadow:0 0 0 3px var(--kikyo-soft);transition:opacity .25s,transform .25s}
+.slot::after{content:"";position:absolute;top:0;bottom:0;right:-.2em;width:2px;background:var(--kikyo);transform:scaleY(0);transition:transform .34s .16s cubic-bezier(.2,.7,.2,1)}
+.slot[aria-pressed="true"]{color:var(--kikyo);border-right-color:transparent}
+.slot[aria-pressed="true"]::before{opacity:0;transform:scale(.2)}
+.slot[aria-pressed="true"]::after{transform:scaleY(1)}
+.slot.wilt{opacity:0;filter:blur(3px);transition:opacity .16s,filter .16s}
+.slot.bloom{animation:bloom .46s cubic-bezier(.2,.7,.2,1)}
+@keyframes bloom{0%{opacity:0;filter:blur(6px)}100%{opacity:1;filter:blur(0)}}
+.note{margin:0;min-height:1.8em;font-size:14px;color:var(--ink-2);text-align:center}
+.note:not(:empty)::before{content:"→ ";color:var(--kikyo)}
+.note:not(:empty){animation:fadein .4s .2s both}
+.hint{margin:0;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--usuzumi)}
+.hint::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--kikyo);animation:pulse 1.8s ease-in-out infinite}
+.side{display:flex;flex-direction:column;gap:22px;min-width:0}
+.veil{margin:0;padding-block:6px 10px;display:flex;align-items:center;gap:10px;color:var(--usuzumi);font-size:14px}
+.veil::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--kikyo);box-shadow:0 0 0 3px var(--kikyo-soft)}
+.reveal{display:flex;flex-direction:column;gap:22px;min-width:0}
+.reveal>*{animation:rise .5s both;animation-delay:calc(var(--i,0) * 70ms)}
+.hw{margin:0;font-family:var(--mincho);font-weight:600;font-size:32px;line-height:1.35;letter-spacing:.06em}
+.hw rt{font-family:var(--gothic);font-size:11px;font-weight:400;letter-spacing:.12em;color:var(--usuzumi)}
+.hw-meta{margin:2px 0 0;display:flex;flex-wrap:wrap;gap:2px 14px;font-size:13px;color:var(--usuzumi)}
+.gist{margin:6px 0 0;font-size:16px}
+.mocknote-inline{margin:0;padding-top:14px;border-top:1px solid var(--keisen);font-size:13px;color:var(--usuzumi)}
+
+/* 物差し */
+.ruler{min-width:0}
+.ruler .label span{letter-spacing:.08em}
+.ruler-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;min-height:124px;border-bottom:1px solid var(--ink-2);padding-top:12px}
+.col{display:flex;flex-direction:row-reverse;justify-content:center;align-items:flex-end;gap:3px;min-width:0}
+.stem{display:inline-block;position:relative;writing-mode:vertical-rl;font-family:var(--mincho);font-size:13.5px;line-height:1.15;letter-spacing:.06em;color:var(--ink-2);padding:5px 1px;border-radius:2px}
+.stem[role="button"]{cursor:pointer}
+.stem[role="button"]:hover,.stem[aria-expanded="true"]{color:var(--ink);background:var(--paper-2)}
+.stem.main{color:var(--kikyo);font-weight:600}
+.stem.main::before{content:"";position:absolute;top:-5px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--kikyo)}
+.stem.sib{color:var(--usuzumi)}
+.stem.used::after{content:"";position:absolute;bottom:-4px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--shu)}
+.axis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));text-align:center;font-size:10.5px;line-height:1.35;color:var(--usuzumi);padding-top:6px}
+.axis b{display:block;font-weight:500;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.sib-note{margin:10px 0 0;font-size:13.5px;color:var(--ink-2)}
+.sib-note:empty{display:none}
+.sib-note b{font-family:var(--mincho);font-size:16px;color:var(--ink);margin-right:6px}
+.yomi{font-size:12px;color:var(--usuzumi);margin-right:8px}
+
+/* 実例・一文・印 */
+.cite{margin:0;padding-top:14px;border-top:1px solid var(--keisen)}
+.chk{font-size:11px;letter-spacing:.08em;color:var(--kikyo);border:1px solid currentColor;border-radius:999px;padding:0 8px;line-height:1.7}
+.cite blockquote{margin:2px 0 4px;font-family:var(--mincho);font-size:18px;line-height:1.75}
+.cite figcaption{font-size:13px;color:var(--ink-2)}
+.ctx{margin:2px 0 0;font-size:13px;color:var(--usuzumi)}
+.hikaru{display:inline-block;margin-top:8px;font-size:14px;color:var(--kikyo);text-decoration-thickness:1px;text-underline-offset:4px}
+.oneline{padding-top:14px;border-top:1px solid var(--keisen)}
+.oneline .line{margin:0 0 8px;font-family:var(--mincho);font-size:18px;line-height:1.75}
+.use{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding-top:14px;border-top:1px solid var(--keisen)}
+.use-btn{border:1px solid var(--ink);background:transparent;color:var(--ink);padding:8px 22px;border-radius:2px;font-size:14.5px;letter-spacing:.12em;cursor:pointer;min-height:44px}
+.use-btn:hover{background:var(--paper-2)}
+.use-btn[aria-pressed="true"]{border-color:var(--shu);color:var(--shu)}
+.use-btn.small{padding:5px 16px;min-height:36px;font-size:13.5px}
+.seals{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.seal{display:inline-flex;flex-direction:column;align-items:center;gap:1px}
+.seal b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--shu);color:var(--on-shu);font-family:var(--mincho);font-size:15px;font-weight:600;transform:rotate(-6deg);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--on-shu) 30%,transparent)}
+.seal small{font-size:10.5px;color:var(--usuzumi);font-variant-numeric:tabular-nums}
+.seal.mini b{width:22px;height:22px;font-size:11.5px}
+.seal.stamp b{animation:stamp .24s cubic-bezier(.2,.9,.3,1.2)}
+.more-count{font-size:12px;color:var(--usuzumi)}
+.use-hint{flex-basis:100%;margin:0;font-size:12.5px;color:var(--usuzumi)}
+
+/* 再会 */
+.reunion{padding-top:14px;border-top:1px solid var(--ink-2)}
+.r-head{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;font-size:13.5px;color:var(--usuzumi)}
+.r-word{background:none;border:0;padding:0;cursor:pointer;font-family:var(--mincho);font-size:21px;color:var(--ink);text-decoration:underline;text-decoration-color:var(--keisen);text-underline-offset:6px}
+.r-swap{margin:4px 0 10px;font-family:var(--mincho);font-size:16px;color:var(--ink-2)}
+.r-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.r-help{font-size:12.5px;color:var(--usuzumi)}
+
+/* 使い方をもう少し */
+.more{border-top:1px solid var(--keisen);padding-top:6px}
+.more summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;min-height:40px;font-size:14px;color:var(--ink-2)}
+.more summary::-webkit-details-marker{display:none}
+.more summary::before{content:"＋";color:var(--usuzumi)}
+.more[open] summary::before{content:"－"}
+.more-body{display:grid;gap:14px;padding-block:4px 8px}
+.ex{margin:0;display:grid;gap:10px}
+.ex dt{font-size:12px;letter-spacing:.1em;color:var(--usuzumi)}
+.ex dd{margin:0;font-family:var(--mincho);font-size:16px;line-height:1.75}
+.kv{margin:0;font-size:14px}
+.kv b{display:block;font-size:12px;font-weight:500;letter-spacing:.1em;color:var(--usuzumi)}
+
+@media (min-width:880px){
+  .entry-grid{grid-template-columns:minmax(0,1fr) minmax(250px,300px);gap:48px;align-items:start}
+  .tanzaku-wrap{grid-column:2;grid-row:1;position:sticky;top:12px}
+  .side{grid-column:1;grid-row:1}
+  .tanzaku{height:330px}
+  .ichibun{font-size:27px}
+}
+@media (min-width:1180px){
+  .reveal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"cite hw" "one ruler" "use ruler" "more more";gap:20px 36px;align-items:start}
+  .reveal>.hw-block{grid-area:hw}.reveal>.ruler{grid-area:ruler}.reveal>.cite,.reveal>.mocknote-inline{grid-area:cite}.reveal>.oneline{grid-area:one}.reveal>.use{grid-area:use}.reveal>.more{grid-area:more}
+}
+
+/* 今週 */
+.week-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;margin:16px 0 2px}
+.week-title{margin:0;font-family:var(--mincho);font-weight:600;font-size:30px;letter-spacing:.14em}
+.week-range{font-size:13px;letter-spacing:.08em;color:var(--usuzumi);font-variant-numeric:tabular-nums}
+.week-sum{margin:0 0 12px;font-size:13.5px;color:var(--ink-2)}
+.week-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink-2)}
+.week-list li{border-bottom:1px solid var(--keisen);animation:rise .5s both;animation-delay:calc(var(--i) * 60ms)}
+.wrow{width:100%;display:grid;grid-template-columns:2em minmax(0,1fr) auto;align-items:center;gap:12px;background:none;border:0;padding:13px 4px;text-align:left;cursor:pointer}
+.wrow:hover{background:var(--paper-2)}
+.dow{font-family:var(--mincho);font-size:15px;color:var(--usuzumi);text-align:center}
+.wsent{font-family:var(--mincho);font-size:17px;line-height:1.75;min-width:0}
+.tag{font-size:11.5px;color:var(--kikyo);border:1px solid currentColor;border-radius:999px;padding:1px 9px;white-space:nowrap}
+.tag.mute{color:var(--usuzumi);border-color:var(--keisen)}
+.bud-word{position:relative;border-bottom:1.5px dotted var(--usuzumi)}
+.bud-word::after{content:"";position:absolute;top:-3px;right:-7px;width:6px;height:6px;border-radius:50%;background:var(--kikyo)}
+.idle{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0}
+.idle .label{margin:0 4px 0 0}
+.chip{border:1px solid var(--keisen);background:transparent;border-radius:999px;padding:3px 12px;font-family:var(--mincho);font-size:14px;cursor:pointer}
+.chip:hover{border-color:var(--ink-2)}
+.week .ruler{margin-top:10px}
+
+/* 引く */
+.hiku{padding-top:16px}
+.hiku textarea{display:block;width:100%;min-height:92px;resize:vertical;border:1px solid var(--keisen);border-radius:2px;background:var(--paper-2);color:var(--ink);font:16px/1.8 var(--mincho);padding:12px 14px}
+.try{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 18px;font-size:12.5px;color:var(--usuzumi)}
+.try button{border:1px solid var(--keisen);background:transparent;border-radius:999px;padding:4px 12px;font-size:13px;color:var(--ink-2);cursor:pointer}
+.res-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--keisen)}
+.res{padding-block:14px;border-bottom:1px solid var(--keisen);display:grid;gap:2px}
+.res-top{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.res-word{background:none;border:0;padding:0;cursor:pointer;font-family:var(--mincho);font-size:21px;color:var(--kikyo)}
+.res-meta{font-size:12.5px;color:var(--usuzumi)}
+.res-gist{margin:0;font-size:14px}
+.res-swap{margin:2px 0 0;font-family:var(--mincho);font-size:16px}
+.res-swap s,.spot-swap s{color:var(--usuzumi)}
+.draft-text{margin:0 0 12px;font-family:var(--mincho);font-size:17px;line-height:2;white-space:pre-wrap}
+.draft-text mark{background:var(--kikyo-soft);color:inherit;border-bottom:2px solid var(--kikyo);padding-inline:1px;animation:fadein .5s both}
+.spot-card{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding-block:12px;border-block:1px solid var(--keisen);font-size:14px}
+.spot-label{font-size:12px;letter-spacing:.14em;color:var(--usuzumi)}
+.spot-swap{font-family:var(--mincho);font-size:17px}
+.draft-why{margin:10px 0 0;font-size:13px;color:var(--usuzumi)}
+
+/* 棚 */
+.tana-sum{display:flex;gap:28px;margin:16px 0 18px}
+.tana-sum p{margin:0;font-size:12.5px;color:var(--usuzumi);letter-spacing:.1em}
+.tana-sum b{display:block;font-family:var(--mincho);font-size:32px;font-weight:600;line-height:1.2;color:var(--ink);letter-spacing:0}
+.tana-sum .used b{color:var(--shu)}
+.shelves{display:grid;gap:18px}
+@media (min-width:720px){.shelves{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 40px}}
+.shelf h2{margin:0 0 2px;font-size:13.5px;font-weight:500;letter-spacing:.14em;color:var(--ink-2);display:flex;gap:10px;align-items:baseline}
+.shelf h2 span{font-size:12px;letter-spacing:.06em;color:var(--usuzumi)}
+.shelf-row{display:flex;align-items:flex-end;gap:8px;min-height:112px;padding:8px 6px 0;border-bottom:1.5px solid var(--ink-2);overflow-x:auto}
+
+/* 記録 */
+.ft{margin-top:44px;padding-top:16px;border-top:1px solid var(--keisen);display:grid;gap:10px;font-size:12.5px;color:var(--usuzumi)}
+.ft p{margin:0}
+.ft-actions{display:flex;flex-wrap:wrap;gap:10px}
+.io:empty{display:none}
+.io pre{margin:6px 0 0;white-space:pre-wrap;word-break:break-all;background:var(--paper-2);padding:10px;font-size:11.5px;max-height:180px;overflow:auto;color:var(--ink-2)}
+
+@keyframes rise{from{opacity:.35;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes stamp{0%{transform:scale(1.35) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(-6deg);opacity:1}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="mockbar" role="region" aria-label="モックの操作">
+    <span class="mock-tag">モック</span>
+    <div class="seg" role="group" aria-label="表示する日">
+      <button type="button" data-face="weekday" aria-pressed="true">平日の朝 9/25(金)</button>
+      <button type="button" data-face="weekend" aria-pressed="false">週末 9/26(土)</button>
+    </div>
+    <button type="button" class="linkbtn" id="reset">記録を最初に戻す</button>
+  </div>
+
+  <header class="hd">
+    <button type="button" class="brand" data-go="home" aria-label="一輪挿し(ホームへ)">
+      <svg class="mark" viewBox="0 0 20 32" aria-hidden="true">
+        <path class="stem-line" d="M10 10.5 C10 7 11 4.4 13.2 3.3"/>
+        <circle class="bloom" cx="14" cy="2.7" r="2.4"/>
+        <path class="vase" d="M8 10.5h4v3.2c3.2 1.6 4.4 4.6 4.4 8.3c0 4.4-2.4 7.5-6.4 7.5s-6.4-3.1-6.4-7.5c0-3.7 1.2-6.7 4.4-8.3z"/>
+      </svg>
+      <span>一輪挿し</span>
+    </button>
+    <nav class="nav" aria-label="ページ">
+      <button type="button" data-go="week">今週</button>
+      <button type="button" data-go="hiku">引く</button>
+      <button type="button" data-go="tana">棚</button>
+    </nav>
+  </header>
+
+  <main id="main"></main>
+
+  <footer class="ft">
+    <p>記録(使った印と、挿した状態)は、このブラウザだけに保存されます。</p>
+    <div class="ft-actions">
+      <button type="button" class="btn-ghost" id="exp">記録を書き出す</button>
+      <button type="button" class="btn-ghost" id="imp">記録を読み込む</button>
+      <input type="file" id="impfile" accept="application/json,.json" hidden>
+    </div>
+    <div class="io" id="io" aria-live="polite"></div>
+    <p>近代文章語: 明治〜昭和前期の書き言葉に見られ、今も現代文へ一か所だけ挿せる語句。実例は青空文庫の本文で照合し、辞書の説明文は転載しません。</p>
+    <p>このモックの「いささか」「あながち」「よしなに」「ひとしお」は、画面を確かめるための仮データです。「数ならぬ」「よんどころなく」の実例は、青空文庫の本文で確認済みです。</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+const ENTRIES = [
+  {
+    id: '2026-09-26-yondokoronaku', date: '2026-09-26', functionTag: '仕方なさ',
+    function: '仕方なさを、愚痴にせず一歩引いて置く',
+    word: 'よんどころなく', notation: '拠所無く', reading: 'よんどころなく', gist: 'ほかに選びようがなく', distance: 3,
+    plain: ['仕方なく', '仕方がなく', 'やむを得ず', 'やむなく'],
+    swap: { before: '雨脚が強くなり、', plain: '仕方なく', after: 'タクシーに乗った。', note: '不満から事情へ、視点が半歩引く' },
+    why: '「自分は嫌だった」より「事情としてそうするほかなかった」に重心が移る。誰かを責める響きが薄い。',
+    citations: [
+      { quote: 'そこで、拠なく毎日々々弁当を吊して', author: '夏目漱石', work: '私の経過した学生時代', year: 1909, url: 'https://www.aozora.gr.jp/cards/000148/files/2677_6506.html', context: '親が退学を許さず、学校へ行くふりをして家を出た話' },
+      { quote: 'よんどころなく内側を紙貼りにして', author: '谷崎潤一郎', work: '陰翳礼讃', year: 1933, url: 'https://www.aozora.gr.jp/cards/001383/files/56642_59575.html', context: '障子を紙だけにしたいが、採光や戸締まりの都合で折り合う話' }
+    ],
+    examples: {
+      close: 'もう一軒行きたかったけど、終電も近く、よんどころなく帰宅。',
+      polite: '最後まで参加したかったのですが、明朝が早く、よんどころなく途中で失礼しました。',
+      essay: '本当は歩いて帰りたかった。雨脚が強くなり、よんどころなくタクシーに乗った。'
+    },
+    oneLine: 'まだ話していたかったけど、終電もあり、よんどころなく帰った。',
+    caution: '「よんどころない事情により」の定型にすると、急に古い事務文書に見える。日常の小さな出来事に混ぜるほうが映える。',
+    siblings: [
+      { word: '心ならずも', reading: 'こころならずも', distance: 2, gist: '本意ではないが', note: '自分の意思と現実のずれに焦点がある',
+        citation: { quote: '心ならずも次第にこの道より遠ざかり', author: '太宰治', work: '不審庵', url: 'https://www.aozora.gr.jp/cards/000035/files/1583_15085.html' } },
+      { word: '致し方なく', reading: 'いたしかたなく', distance: 2, gist: 'どうしようもなく', note: '「仕方なく」を半歩ていねいにした形' },
+      { word: '詮方なく', reading: 'せんかたなく', distance: 4, gist: 'どうする手だてもなく', note: '美しいが、文学を書いている感が出やすい',
+        citation: { quote: '今更に詮方もなく', author: '福田英子', work: '母となる', url: 'https://www.aozora.gr.jp/cards/000057/files/369_18841.html' } },
+      { word: '余儀なく', reading: 'よぎなく', distance: 1, gist: 'ほかに方法がなく', note: '現役の硬い言葉で、発見は薄い' }
+    ],
+    refs: [{ label: 'コトバンク「拠所無い」', url: 'https://kotobank.jp/word/%E6%8B%A0%E6%89%80%E7%84%A1%E3%81%84-655359' }]
+  },
+  {
+    id: '2026-09-25-kazunaranu', date: '2026-09-25', functionTag: 'へりくだる',
+    function: '自分を一歩引いた位置から、へりくだる',
+    word: '数ならぬ', notation: '数ならぬ', reading: 'かずならぬ', gist: 'ものの数に入らない、取るに足りない', distance: 3,
+    plain: ['大した者でもない', '大したことのない私', '取るに足りない私'],
+    swap: { before: '', plain: '大した者でもない', after: '私のために、遠くから来てくださって。', note: '卑下より、自分を少し遠くから眺める余裕が出る' },
+    why: '自分を低く言いながら、卑屈にならない。一歩引いて自分を眺める距離と、文の余韻が生まれる。',
+    citations: [
+      { quote: 'そのために、数ならぬ私共まで、心を痛めて居るような次第', author: '野村胡堂', work: '古銭の謎', url: 'https://www.aozora.gr.jp/cards/001670/files/56707_57475.html', context: '富豪の執事が、主人の失踪に心を痛めていると、自分たちを低めて語る場面' }
+    ],
+    examples: {
+      close: '数ならぬ私のために、わざわざ集まってくれてありがとう。',
+      polite: '数ならぬ私にまでお声がけいただき、ありがとうございます。',
+      essay: '数ならぬ私の一票でも、今日は投じておきたかった。'
+    },
+    oneLine: '数ならぬ私のために、ありがとうございます。',
+    caution: '自分や身内にだけ使う。相手を「数ならぬ」と言うと失礼になる。多用すると芝居がかる。',
+    siblings: [
+      { word: '不肖', reading: 'ふしょう', distance: 3, gist: '未熟で至らない自分', note: '改まった挨拶向き。「不肖ながら」の形で使う' },
+      { word: '及ばずながら', reading: 'およばずながら', distance: 2, gist: '力は足りないが', note: '手伝いを申し出るときの慎み' },
+      { word: '取るに足らぬ', reading: 'とるにたらぬ', distance: 2, gist: '問題にするほどの価値もない', note: '「足りない」より文章語寄り' },
+      { word: '浅学の身', reading: 'せんがくのみ', distance: 3, gist: '学問が浅い自分', note: '漢語寄りで硬い。学びの場の挨拶向き' }
+    ],
+    refs: [{ label: 'コトバンク「数ならず」', url: 'https://kotobank.jp/word/%E6%95%B0%E3%81%AA%E3%82%89%E3%81%9A-462498' }]
+  },
+  {
+    id: '2026-09-24-hitoshio', date: '2026-09-24', mock: true, functionTag: '控えめに喜ぶ',
+    function: '喜びを大声にせず、一段深くする',
+    word: 'ひとしお', notation: '一入', reading: 'ひとしお', gist: 'いっそう、ひときわ', distance: 2,
+    plain: ['いつもより', '一段と'],
+    swap: { before: '雨上がりの夕焼けは、', plain: 'いつもより', after: 'きれいに見えた。', note: '比べる目が消え、しみじみが残る' }
+  },
+  {
+    id: '2026-09-23-yoshinani', date: '2026-09-23', mock: true, functionTag: '頼む',
+    function: '任せる相手の裁量を、信じて頼む',
+    word: 'よしなに', notation: '良しなに', reading: 'よしなに', gist: 'よいように、うまく取り計らって', distance: 3,
+    plain: ['いい感じに', 'うまいこと'],
+    swap: { before: '細かいところは、', plain: 'いい感じに', after: '進めておいてください。', note: '丸投げが、信頼の委任に変わる' }
+  },
+  {
+    id: '2026-09-22-anagachi', date: '2026-09-22', mock: true, functionTag: '言い切らない',
+    function: '否定を弱めて、相手の理を半分だけ認める',
+    word: 'あながち', notation: '強ち', reading: 'あながち', gist: '必ずしも(打ち消しを伴う)', distance: 3,
+    plain: ['必ずしも'],
+    swap: { before: '彼の言い分も、', plain: '必ずしも', after: '間違いとは言えない。', note: '理屈の留保が、実感の留保になる' }
+  },
+  {
+    id: '2026-09-21-isasaka', date: '2026-09-21', mock: true, functionTag: '少し批判する',
+    function: '角を立てずに、引っかかりを示す',
+    word: 'いささか', notation: '聊か', reading: 'いささか', gist: 'わずかに、少しばかり', distance: 2,
+    plain: ['ちょっと', '少しばかり'],
+    swap: { before: 'その結論には、', plain: 'ちょっと', after: '疑問が残る。', note: '軽口が消え、静かな異論になる' }
+  }
+];
+
+// 照合で得る想定のフラグメント(依頼書6章の規則で算出)
+const FRAGS = {
+  '2026-09-26-yondokoronaku#c0': { prefix: 'れぬ。', start: 'そこで、', end: 'して' },
+  '2026-09-26-yondokoronaku#c1': { prefix: '起る。', start: 'よんどころなく内側を紙貼りにして' },
+  '2026-09-26-yondokoronaku#s0': { prefix: '繁く、', start: '心ならずも次第にこの道より遠ざかり' },
+  '2026-09-26-yondokoronaku#s2': { prefix: 'ては、', start: '今更に', end: 'もなく' },
+  '2026-09-25-kazunaranu#c0': { prefix: 'です、', start: 'そのために、数ならぬ私共まで、心を痛めて居るような次第' }
+};
+
+const TODAYS = { weekday: '2026-09-25', weekend: '2026-09-26' };
+const DOW = ['日', '月', '火', '水', '木', '金', '土'];
+const KANJI_NUM = ['〇', '一', '二', '三', '四', '五', '六', '七'];
+const DIST_LABEL = ['', '今の言葉', '文章語', '古風で自然', '文学的', '歴史的'];
+const REUNION_DAYS = [3, 7, 14, 30, 60, 120];
+const SAMPLE_DRAFT = '昨日は朝から雨で、仕方なく家で過ごした。大したことのない私の話にも、友人は最後まで付き合ってくれた。';
+const KEY = 'ichirinzashi-mock:v1';
+const DEFAULT_STORE = { used: { '2026-09-21-isasaka': ['2026-09-22'], '2026-09-24-hitoshio': ['2026-09-25'] }, swapped: {}, hintSeen: false };
+
+const clone = (o) => JSON.parse(JSON.stringify(o));
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const hl = (text, word) => {
+  const i = text.indexOf(word);
+  return i < 0 ? esc(text) : esc(text.slice(0, i)) + '<em>' + esc(word) + '</em>' + esc(text.slice(i + word.length));
+};
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function loadStore() {
+  try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && v.used && v.swapped) return v; } catch (e) { /* 保存できない環境でも表示は続ける */ }
+  return clone(DEFAULT_STORE);
+}
+function saveStore() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { /* 同上 */ } }
+
+let store = loadStore();
+let face = 'weekday';
+let route = { name: 'home' };
+let prev = { name: 'home' };
+let draft = null;
+
+const today = () => TODAYS[face];
+const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+const daysBetween = (a, b) => Math.round((parse(b) - parse(a)) / 864e5);
+const addDays = (s, n) => { const d = parse(s); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const mondayOf = (s) => addDays(s, -((parse(s).getUTCDay() + 6) % 7));
+const md = (s) => { const d = parse(s); return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日`; };
+const mdDot = (s) => { const d = parse(s); return `${d.getUTCMonth() + 1}.${d.getUTCDate()}`; };
+const dow = (s) => DOW[parse(s).getUTCDay()];
+
+const visible = () => ENTRIES.filter((e) => e.date <= today());
+const latest = () => visible()[0];
+const byId = (id) => ENTRIES.find((e) => e.id === id);
+const usedDates = (id) => store.used[id] || [];
+const isUsed = (id) => usedDates(id).length > 0;
+
+function pickReunion() {
+  const t = today();
+  return visible()
+    .filter((e) => !isUsed(e.id) && REUNION_DAYS.includes(daysBetween(e.date, t)))
+    .sort((a, b) => daysBetween(a.date, t) - daysBetween(b.date, t))[0];
+}
+
+const enc = (s) => encodeURIComponent(s).replace(/-/g, '%2D');
+function fragHref(url, f) {
+  if (!f) return url;
+  return url + '#:~:text=' + (f.prefix ? enc(f.prefix) + '-,' : '') + enc(f.start) + (f.end ? ',' + enc(f.end) : '');
+}
+
+/* ---------- 描画 ---------- */
+
+function render() {
+  let html = '';
+  if (route.name === 'home') html = face === 'weekend' ? weekHTML() : asaHTML();
+  else if (route.name === 'week') html = weekHTML();
+  else if (route.name === 'word') html = entryHTML(byId(route.id), 'word');
+  else if (route.name === 'hiku') html = hikuHTML();
+  else if (route.name === 'tana') html = tanaHTML();
+  document.getElementById('main').innerHTML = html;
+  const cur = route.name === 'home' ? (face === 'weekend' ? 'week' : '') : route.name;
+  document.querySelectorAll('.nav [data-go]').forEach((b) => {
+    if (b.dataset.go === cur) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  document.querySelectorAll('[data-face]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.face === face)));
+  if (route.name === 'hiku') {
+    const q = document.getElementById('q');
+    q.addEventListener('input', () => updateResults(q.value));
+  }
+}
+
+function go(name, id) {
+  if (name === 'word') prev = route;
+  route = { name, id };
+  render();
+  window.scrollTo(0, 0);
+}
+
+function asaHTML() {
+  const e = latest();
+  if (!e) return '<p class="empty">まだ一輪も届いていません。最初の一輪は、毎朝6時半ごろに届きます。</p>';
+  return entryHTML(e, 'asa');
+}
+
+function entryHTML(e, mode) {
+  const t = today();
+  const open = !!store.swapped[e.id];
+  const eyebrow = mode === 'asa' && e.date === t
+    ? `${md(e.date)}(${dow(e.date)})<b>今朝の一輪</b>`
+    : `${md(e.date)}(${dow(e.date)})の一輪`;
+  const late = mode === 'asa' && e.date !== t ? '<p class="late">今朝の一輪は、まだ届いていません。毎朝6時半ごろに届きます。</p>' : '';
+  return `
+<article class="entry" data-id="${e.id}">
+  ${mode === 'word' ? '<button type="button" class="linkbtn back" data-back>← 戻る</button>' : ''}
+  <p class="eyebrow">${eyebrow}</p>${late}
+  <div class="entry-grid">
+    <div class="tanzaku-wrap">
+      <figure class="tanzaku">
+        <figcaption class="kotobagaki">${esc(e.function)}</figcaption>
+        <p class="ichibun">${esc(e.swap.before)}<span class="slot" role="button" tabindex="0" aria-pressed="${open}">${esc(open ? e.word : e.swap.plain)}</span>${esc(e.swap.after)}</p>
+      </figure>
+      <p class="note" aria-live="polite">${open ? esc(e.swap.note) : ''}</p>
+      ${!store.hintSeen && !open ? '<p class="hint">点線の言葉に触れると、一輪挿せます</p>' : ''}
+    </div>
+    <div class="side">
+      <p class="veil"${open ? ' hidden' : ''}>蕾に触れると、言葉と実例がひらきます。</p>
+      <div class="reveal"${open ? '' : ' hidden'}>${revealHTML(e)}</div>
+      ${mode === 'asa' ? reunionHTML() : ''}
+    </div>
+  </div>
+</article>`;
+}
+
+function revealHTML(e) {
+  const hasKanji = /[一-鿿]/.test(e.word);
+  const hw = hasKanji ? `<ruby>${esc(e.word)}<rt>${esc(e.reading)}</rt></ruby>` : esc(e.word);
+  const c = (e.citations || [])[0];
+  const parts = [
+    `<div class="hw-block">
+      <h2 class="hw">${hw}</h2>
+      <p class="hw-meta">${e.notation && e.notation !== e.word ? `<span>${esc(e.notation)}</span>` : ''}<span>時代距離 ${e.distance}・${DIST_LABEL[e.distance]}</span></p>
+      <p class="gist">${esc(e.gist)}</p>
+    </div>`,
+    entryRulerHTML(e),
+    c ? citeHTML(e, c, 'c0') : '<p class="mocknote-inline">モック用の仮データです。実運用では、GPTが青空文庫の実例を付け、照合します。</p>',
+    e.oneLine ? `<div class="oneline"><p class="label">今日から使うなら</p><p class="line">${hl(e.oneLine, e.word)}</p><button type="button" class="btn-ghost copy" data-copy="${esc(e.oneLine)}">写す</button></div>` : '',
+    useHTML(e),
+    e.examples ? moreHTML(e) : ''
+  ].filter(Boolean);
+  return parts.map((p, i) => p.replace(/^\s*<(\w+)/, `<$1 style="--i:${i}"`)).join('');
+}
+
+function rulerShell(title, cols, extra = '') {
+  const axis = [1, 2, 3, 4, 5].map((d) => `<span><b>${d}</b>${DIST_LABEL[d]}</span>`).join('');
+  return `<div class="ruler" role="group" aria-label="${esc(title)}(時代距離の物差し)">
+    <p class="label">${esc(title)}<span>今 → 昔</span></p>
+    <div class="ruler-cols">${cols}</div>
+    <div class="axis" aria-hidden="true">${axis}</div>${extra}
+  </div>`;
+}
+
+function entryRulerHTML(e) {
+  const items = [{ word: e.word, distance: e.distance, main: true }, ...(e.siblings || []).map((s, k) => ({ ...s, k }))];
+  const cols = [1, 2, 3, 4, 5].map((d) => `<div class="col">${items.filter((i) => i.distance === d).map((i) => i.main
+    ? `<span class="stem main">${esc(i.word)}</span>`
+    : `<span class="stem" role="button" tabindex="0" aria-expanded="false" data-sib="${i.k}">${esc(i.word)}</span>`).join('')}</div>`).join('');
+  return rulerShell(e.siblings ? '同じ働きの言葉' : '時代距離', cols, '<p class="sib-note" aria-live="polite"></p>');
+}
+
+function citeHTML(e, c, key) {
+  const f = FRAGS[`${e.id}#${key}`];
+  return `<figure class="cite">
+    <p class="label">実例<span class="chk">原文照合済み</span></p>
+    <blockquote>「${esc(c.quote)}」</blockquote>
+    <figcaption>${esc(c.author)}『${esc(c.work)}』${c.year ? ` ${c.year}` : ''}</figcaption>
+    ${c.context ? `<p class="ctx">${esc(c.context)}</p>` : ''}
+    <a class="hikaru" href="${esc(fragHref(c.url, f))}" target="_blank" rel="noopener">原文で光らせる<span aria-hidden="true"> ↗</span></a>
+  </figure>`;
+}
+
+function useHTML(e, stampLast = false) {
+  const dates = usedDates(e.id);
+  const todayUsed = dates.includes(today());
+  const shown = dates.slice(-5);
+  const seals = shown.map((d, i) => `<span class="seal${stampLast && i === shown.length - 1 ? ' stamp' : ''}"><b aria-hidden="true">使</b><small>${mdDot(d)}</small></span>`).join('');
+  const more = dates.length > 5 ? `<span class="more-count">ほか${dates.length - 5}回</span>` : '';
+  return `<div class="use">
+    <button type="button" class="use-btn" data-use="${e.id}" aria-pressed="${todayUsed}">${todayUsed ? '今日、使った' : '使った'}</button>
+    <div class="seals" role="img" aria-label="使った日: ${dates.length ? dates.map(mdDot).join('、') : 'まだなし'}">${seals}${more}</div>
+    ${dates.length ? '' : '<p class="use-hint">実生活で使った日に押すと、朱の印が残ります。同じ日にもう一度押すと取り消せます。</p>'}
+  </div>`;
+}
+
+function moreHTML(e) {
+  const others = (e.citations || []).slice(1).map((c, k) => citeHTML(e, c, `c${k + 1}`)).join('');
+  const refs = (e.refs || []).map((r) => `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.label)}</a>`).join('、');
+  return `<details class="more"><summary>使い方をもう少し</summary>
+    <div class="more-body">
+      <dl class="ex">
+        <div><dt>親しい人へ</dt><dd>${hl(e.examples.close, e.word)}</dd></div>
+        <div><dt>少し丁寧なメッセージ</dt><dd>${hl(e.examples.polite, e.word)}</dd></div>
+        <div><dt>エッセイ・SNS・日記</dt><dd>${hl(e.examples.essay, e.word)}</dd></div>
+      </dl>
+      <p class="kv"><b>普通に言うなら</b>${e.plain.map(esc).join('、')}</p>
+      <p class="kv"><b>それでも使う意味</b>${esc(e.why)}</p>
+      <p class="kv"><b>気をつけること</b>${esc(e.caution)}</p>
+      ${others}
+      ${refs ? `<p class="kv"><b>辞書</b>${refs}</p>` : ''}
+    </div>
+  </details>`;
+}
+
+function reunionHTML() {
+  const r = pickReunion();
+  if (!r) return '';
+  const n = daysBetween(r.date, today());
+  return `<aside class="reunion" aria-label="再会">
+    <p class="label">再会</p>
+    <p class="r-head"><span>${n}日前の一輪</span><button type="button" class="r-word" data-go-word="${r.id}">${esc(r.word)}</button><span>まだ出番なし</span></p>
+    <p class="r-swap">${esc(r.swap.before)}<em>${esc(r.word)}</em>${esc(r.swap.after)}</p>
+    <div class="r-actions">${reunionActions(r.id, false)}</div>
+  </aside>`;
+}
+
+function reunionActions(id, done) {
+  return done
+    ? `<span class="seal stamp"><b aria-hidden="true">使</b><small>${mdDot(today())}</small></span><span class="r-help">印を押しました。</span><button type="button" class="linkbtn" data-use="${id}" data-where="reunion">取り消す</button>`
+    : `<button type="button" class="use-btn small" data-use="${id}" data-where="reunion" aria-pressed="false">使った</button><span class="r-help">使っていたら、ここで印を押せます</span>`;
+}
+
+function weekHTML() {
+  const t = today();
+  const mon = mondayOf(t);
+  const list = ENTRIES.filter((e) => e.date >= mon && e.date <= t).sort((a, b) => (a.date < b.date ? -1 : 1));
+  if (!list.length) return '<p class="empty">今週の一輪は、まだありません。</p>';
+  const idle = list.filter((e) => !isUsed(e.id));
+  const rows = list.map((e, i) => {
+    const fresh = e.date === t && !store.swapped[e.id];
+    const sent = fresh
+      ? `${esc(e.swap.before)}<span class="bud-word">${esc(e.swap.plain)}</span>${esc(e.swap.after)}`
+      : `${esc(e.swap.before)}<em>${esc(e.word)}</em>${esc(e.swap.after)}`;
+    const mark = isUsed(e.id)
+      ? '<span class="seal mini"><b aria-hidden="true">使</b></span><span class="sr">使った</span>'
+      : e.date === t ? '<span class="tag">今朝</span>' : '<span class="tag mute">まだ出番なし</span>';
+    return `<li style="--i:${i}"><button type="button" class="wrow" data-go-word="${e.id}"><span class="dow">${dow(e.date)}</span><span class="wsent">${sent}</span><span class="wmark">${mark}</span></button></li>`;
+  }).join('');
+  const cols = [1, 2, 3, 4, 5].map((d) => `<div class="col">${list.filter((e) => e.distance === d)
+    .map((e) => `<span class="stem${e.date === t ? ' main' : ''}${isUsed(e.id) ? ' used' : ''}" role="button" tabindex="0" data-go-word="${e.id}">${esc(e.word)}</span>`).join('')}</div>`).join('');
+  return `<section class="week">
+    <div class="week-head"><h1 class="week-title">今週の${KANJI_NUM[list.length]}語</h1><span class="week-range">${mdDot(mon)} — ${mdDot(addDays(mon, 6))}</span></div>
+    <p class="week-sum">使った語 ${list.length - idle.length}・まだ出番なし ${idle.length}</p>
+    <ol class="week-list">${rows}</ol>
+    ${idle.length ? `<div class="idle"><p class="label">まだ出番のない語</p>${idle.map((e) => `<button type="button" class="chip" data-go-word="${e.id}">${esc(e.word)}</button>`).join('')}</div>` : ''}
+    ${rulerShell('今週の物差し', cols)}
+    <p><button type="button" class="linkbtn" data-go-word="${latest().id}">今朝の一輪だけ見る →</button></p>
+  </section>`;
+}
+
+function hikuHTML() {
+  return `<section class="hiku">
+    <label class="label" for="q">言い換えたい言葉、または下書き</label>
+    <textarea id="q" rows="3" placeholder="例: 仕方なく"></textarea>
+    <div class="try"><span>試す</span>
+      <button type="button" data-try="仕方なく">仕方なく</button>
+      <button type="button" data-try="大した者でもない">大した者でもない</button>
+      <button type="button" data-try="${esc(SAMPLE_DRAFT)}">下書きの例</button>
+    </div>
+    <div id="results" aria-live="polite"></div>
+  </section>`;
+}
+
+function searchWords(q) {
+  const out = [];
+  for (const e of ENTRIES) {
+    const hay = [e.word, e.reading, e.notation, e.function, e.functionTag, ...e.plain];
+    if (hay.some((h) => h && (h.includes(q) || (h.length >= 2 && q.includes(h))))) {
+      // 本体が当たったら、同じ働きの候補も並べる
+      out.push({ e });
+      (e.siblings || []).forEach((s) => out.push({ e, s }));
+      continue;
+    }
+    (e.siblings || []).forEach((s) => { if ([s.word, s.reading].some((h) => h.includes(q))) out.push({ e, s }); });
+  }
+  return out;
+}
+
+function draftSpots(text) {
+  const spots = [];
+  for (const e of ENTRIES) {
+    for (const p of e.plain) {
+      if (p.length < 3) continue;
+      for (let i = text.indexOf(p); i >= 0; i = text.indexOf(p, i + p.length)) spots.push({ e, p, i });
+    }
+  }
+  const off = (e) => Math.abs(e.distance - 3);
+  return spots.sort((a, b) => (isUsed(a.e.id) - isUsed(b.e.id)) || (off(a.e) - off(b.e)) || b.e.date.localeCompare(a.e.date) || (a.i - b.i));
+}
+
+function updateResults(value) {
+  const box = document.getElementById('results');
+  const q = value.trim();
+  if (!q) { box.innerHTML = ''; return; }
+  if (q.length >= 30 || /[。\n]/.test(q)) {
+    draft = { text: q, spots: draftSpots(q), k: 0, done: false };
+    box.innerHTML = draftHTML();
+    return;
+  }
+  const res = searchWords(q);
+  box.innerHTML = res.length
+    ? `<ul class="res-list">${res.map(resHTML).join('')}</ul>`
+    : `<p class="empty">「${esc(q)}」に当たる言葉は、まだ棚にありません。</p>`;
+}
+
+function resHTML({ e, s }) {
+  if (s) {
+    return `<li class="res"><div class="res-top"><button type="button" class="res-word" data-go-word="${e.id}">${esc(s.word)}</button><span class="res-meta">時代距離 ${s.distance}・「${esc(e.word)}」の日の候補</span></div><p class="res-gist">${esc(s.gist)}。${esc(s.note)}</p></li>`;
+  }
+  return `<li class="res"><div class="res-top"><button type="button" class="res-word" data-go-word="${e.id}">${esc(e.word)}</button><span class="res-meta">時代距離 ${e.distance}・${esc(e.functionTag)}</span></div><p class="res-gist">${esc(e.gist)}</p><p class="res-swap">${esc(e.swap.before)}<s>${esc(e.swap.plain)}</s><em>${esc(e.word)}</em>${esc(e.swap.after)}</p></li>`;
+}
+
+function draftHTML() {
+  const { text, spots, k, done } = draft;
+  if (!spots.length) return '<p class="empty">この下書きには、挿せる場所が見つかりませんでした。</p>';
+  const sp = spots[k];
+  const before = text.slice(0, sp.i);
+  const after = text.slice(sp.i + sp.p.length);
+  const body = done ? `${esc(before)}<em>${esc(sp.e.word)}</em>${esc(after)}` : `${esc(before)}<mark>${esc(sp.p)}</mark>${esc(after)}`;
+  const card = done
+    ? `<div class="spot-card"><span>一輪、挿しました。</span><button type="button" class="btn-ghost copy" data-copy="${esc(before + sp.e.word + after)}">写す</button><button type="button" class="linkbtn" data-spot="undo">戻す</button></div>`
+    : `<div class="spot-card"><span class="spot-label">ここに一輪</span><span class="spot-swap"><s>${esc(sp.p)}</s> → <em>${esc(sp.e.word)}</em></span><button type="button" class="use-btn small" data-spot="insert">挿す</button>${spots.length > 1 ? `<button type="button" class="linkbtn" data-spot="next">ほかの場所(${k + 1}/${spots.length})</button>` : ''}</div>`;
+  return `<p class="draft-text">${body}</p>${card}<p class="draft-why">${esc(sp.e.word)}: ${esc(sp.e.swap.note)}</p>`;
+}
+
+function tanaHTML() {
+  const groups = new Map();
+  for (const e of ENTRIES) {
+    if (!groups.has(e.functionTag)) groups.set(e.functionTag, []);
+    groups.get(e.functionTag).push(e);
+  }
+  const shelves = [...groups.entries()].sort((a, b) => b[1].length - a[1].length || b[1][0].date.localeCompare(a[1][0].date));
+  const usedN = ENTRIES.filter((e) => isUsed(e.id)).length;
+  return `<section class="tana">
+    <div class="tana-sum"><p><b>${ENTRIES.length}</b>ためた語</p><p class="used"><b>${usedN}</b>使った語</p></div>
+    <div class="shelves">${shelves.map(([tag, list]) => {
+      const sibs = list.flatMap((e) => (e.siblings || []).map((s) => ({ ...s, parent: e.id })));
+      const stems = [
+        ...list.map((e) => ({ word: e.word, distance: e.distance, id: e.id, used: isUsed(e.id), main: true })),
+        ...sibs.map((s) => ({ word: s.word, distance: s.distance, id: s.parent }))
+      ].sort((a, b) => a.distance - b.distance);
+      return `<div class="shelf"><h2>${esc(tag)}<span>${list.length}語${sibs.length ? `・候補${sibs.length}` : ''}</span></h2>
+        <div class="shelf-row">${stems.map((s) => `<span class="stem${s.main ? '' : ' sib'}${s.used ? ' used' : ''}" role="button" tabindex="0" data-go-word="${s.id}" title="時代距離 ${s.distance}">${esc(s.word)}</span>`).join('')}</div></div>`;
+    }).join('')}</div>
+  </section>`;
+}
+
+/* ---------- 操作 ---------- */
+
+function toggleSwap(slot) {
+  const art = slot.closest('.entry');
+  const e = byId(art.dataset.id);
+  const to = slot.getAttribute('aria-pressed') !== 'true';
+  const first = !store.swapped[e.id];
+  store.swapped[e.id] = true;
+  store.hintSeen = true;
+  saveStore();
+  const apply = () => {
+    slot.textContent = to ? e.word : e.swap.plain;
+    slot.setAttribute('aria-pressed', String(to));
+    art.querySelector('.note').textContent = to ? e.swap.note : '';
+    const hint = art.querySelector('.hint');
+    if (hint) hint.remove();
+    if (to && first) {
+      art.querySelector('.veil').hidden = true;
+      art.querySelector('.reveal').hidden = false;
+    }
+    if (to && !reduced()) { slot.classList.remove('bloom'); void slot.offsetWidth; slot.classList.add('bloom'); }
+  };
+  if (reduced()) { apply(); return; }
+  slot.classList.add('wilt');
+  setTimeout(() => { slot.classList.remove('wilt'); apply(); }, 160);
+}
+
+function showSibling(stem) {
+  const art = stem.closest('.entry');
+  const e = byId(art.dataset.id);
+  const k = Number(stem.dataset.sib);
+  const s = e.siblings[k];
+  const note = art.querySelector('.sib-note');
+  const was = stem.getAttribute('aria-expanded') === 'true';
+  art.querySelectorAll('.stem[data-sib]').forEach((x) => x.setAttribute('aria-expanded', 'false'));
+  if (was) { note.innerHTML = ''; return; }
+  stem.setAttribute('aria-expanded', 'true');
+  const c = s.citation;
+  const link = c ? ` <a href="${esc(fragHref(c.url, FRAGS[`${e.id}#s${k}`]))}" target="_blank" rel="noopener">${esc(c.author)}『${esc(c.work)}』で光らせる ↗</a>` : '';
+  note.innerHTML = `<b>${esc(s.word)}</b><span class="yomi">${esc(s.reading)}</span>${esc(s.gist)}。${esc(s.note)}。${link}`;
+}
+
+function toggleUse(btn) {
+  const id = btn.dataset.use;
+  const t = today();
+  const arr = [...usedDates(id)];
+  const k = arr.indexOf(t);
+  const adding = k < 0;
+  if (adding) arr.push(t); else arr.splice(k, 1);
+  arr.sort();
+  if (arr.length) store.used[id] = arr; else delete store.used[id];
+  saveStore();
+  if (btn.dataset.where === 'reunion') {
+    btn.closest('.r-actions').innerHTML = reunionActions(id, adding);
+    return;
+  }
+  btn.closest('.use').outerHTML = useHTML(byId(id), adding);
+  const again = document.querySelector(`.use [data-use="${id}"]`);
+  if (again) again.focus();
+}
+
+async function copyText(btn) {
+  const label = btn.textContent;
+  try {
+    await navigator.clipboard.writeText(btn.dataset.copy);
+    btn.textContent = '写しました';
+  } catch (err) {
+    const target = btn.closest('.oneline, #results')?.querySelector('.line, .draft-text');
+    if (target) {
+      const r = document.createRange();
+      r.selectNodeContents(target);
+      const sel = getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+    }
+    btn.textContent = '選択しました。コピーしてください';
+  }
+  setTimeout(() => { btn.textContent = label; }, 1800);
+}
+
+function spotAction(a) {
+  if (a === 'insert') draft.done = true;
+  if (a === 'undo') draft.done = false;
+  if (a === 'next') { draft.k = (draft.k + 1) % draft.spots.length; draft.done = false; }
+  document.getElementById('results').innerHTML = draftHTML();
+}
+
+function exportRecords() {
+  const json = JSON.stringify({ app: 'ichirinzashi', version: 1, exportedAt: new Date().toISOString(), used: store.used, swapped: store.swapped }, null, 2);
+  document.getElementById('io').innerHTML = `<p>本番では、この内容をJSONファイルとして保存します(モックでは中身だけ表示します)。</p><pre>${esc(json)}</pre>`;
+}
+
+function importRecords(file) {
+  const io = document.getElementById('io');
+  file.text().then((txt) => {
+    const data = JSON.parse(txt);
+    if (!data || typeof data.used !== 'object') throw new Error('shape');
+    for (const [id, dates] of Object.entries(data.used)) {
+      if (!Array.isArray(dates)) continue;
+      store.used[id] = [...new Set([...usedDates(id), ...dates.filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))])].sort();
+    }
+    for (const [id, v] of Object.entries(data.swapped || {})) if (v) store.swapped[id] = true;
+    saveStore();
+    render();
+    io.innerHTML = '<p>記録を読み込み、今の記録と合わせました。</p>';
+  }).catch(() => {
+    io.innerHTML = '<p>読み込めませんでした。「記録を書き出す」で作ったJSONファイルを選んでください。</p>';
+  });
+}
+
+document.addEventListener('click', (ev) => {
+  const t = ev.target.closest('button, [role="button"]');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.face) { face = d.face; route = { name: 'home' }; draft = null; render(); window.scrollTo(0, 0); return; }
+  if (t.id === 'reset') { store = clone(DEFAULT_STORE); saveStore(); document.getElementById('io').innerHTML = ''; render(); return; }
+  if (t.id === 'exp') { exportRecords(); return; }
+  if (t.id === 'imp') { document.getElementById('impfile').click(); return; }
+  if (d.go) { go(d.go); return; }
+  if (d.goWord) { go('word', d.goWord); return; }
+  if ('back' in d) { route = prev; render(); window.scrollTo(0, 0); return; }
+  if (t.classList.contains('slot')) { toggleSwap(t); return; }
+  if (d.sib !== undefined) { showSibling(t); return; }
+  if (d.use) { toggleUse(t); return; }
+  if (t.classList.contains('copy')) { copyText(t); return; }
+  if (d.try !== undefined) { const q = document.getElementById('q'); q.value = d.try; updateResults(q.value); return; }
+  if (d.spot) { spotAction(d.spot); }
+});
+
+document.addEventListener('keydown', (ev) => {
+  const t = ev.target;
+  if (!(t instanceof HTMLElement) || t.getAttribute('role') !== 'button' || t.tagName === 'BUTTON') return;
+  if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); t.click(); }
+});
+
+document.getElementById('impfile').addEventListener('change', (ev) => {
+  const f = ev.target.files && ev.target.files[0];
+  if (f) importRecords(f);
+  ev.target.value = '';
+});
+
+render();
+})();
+</script>

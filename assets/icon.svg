@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 32">
+  <style>
+    .vase{fill:none;stroke:#1F2124;stroke-width:1.3;stroke-linejoin:round}.stem{fill:none;stroke:#464A4E;stroke-width:1.2;stroke-linecap:round}.bloom{fill:#5654A2}
+    @media(prefers-color-scheme:dark){.vase{stroke:#E6E8E4}.stem{stroke:#BFC3C0}.bloom{fill:#A7A2EC}}
+  </style>
+  <path class="stem" d="M10 10.5 C10 7 11 4.4 13.2 3.3"/>
+  <circle class="bloom" cx="14" cy="2.7" r="2.4"/>
+  <path class="vase" d="M8 10.5h4v3.2c3.2 1.6 4.4 4.6 4.4 8.3c0 4.4-2.4 7.5-6.4 7.5s-6.4-3.1-6.4-7.5c0-3.7 1.2-6.7 4.4-8.3z"/>
+</svg>

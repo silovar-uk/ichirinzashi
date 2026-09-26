@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#F1F2EE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141619" media="(prefers-color-scheme: dark)">
+  <title>一輪挿し</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="hd">
+      <a class="brand" href="#/" aria-label="一輪挿し（ホームへ）">
+        <img class="mark" src="assets/icon.svg" alt="">
+        <span>一輪挿し</span>
+      </a>
+      <nav class="nav" aria-label="ページ">
+        <a href="#/week" data-nav="week">今週</a>
+        <a href="#/hiku" data-nav="hiku">引く</a>
+        <a href="#/tana" data-nav="tana">棚</a>
+      </nav>
+    </header>
+
+    <main id="main" aria-live="polite">
+      <div class="loading-paper" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    </main>
+
+    <footer class="ft" id="footer" hidden>
+      <p>記録（使った印と、挿した状態）は、このブラウザだけに保存されます。</p>
+      <div class="ft-actions">
+        <button type="button" class="btn-ghost" id="export-records">記録を書き出す</button>
+        <button type="button" class="btn-ghost" id="import-records">記録を読み込む</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden>
+      </div>
+      <div class="io" id="io" aria-live="polite"></div>
+      <p id="invalid-note"></p>
+      <p>近代文章語：明治〜昭和前期の書き言葉に見られ、今も現代文へ一か所だけ挿せる語句。辞書の説明文は転載せず、青空文庫の実例は本文と照合します。</p>
+    </footer>
+  </div>
+  <div class="today-override" id="today-override" hidden>日付を差し替え中</div>
+  <script type="module" src="assets/app.js"></script>
+</body>
+</html>
