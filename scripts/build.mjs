@@ -1,11 +1,48 @@
+import { execFile } from 'node:child_process';
 import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 import { isAozoraUrl, validateEntry } from './lib.mjs';
+
+const execFileAsync = promisify(execFile);
 
 const root = new URL('../', import.meta.url);
 const entriesDir = new URL('../entries/', import.meta.url);
 const checksPath = new URL('../data/checks.json', import.meta.url);
 const siteDir = new URL('../_site/', import.meta.url);
+const repoDir = fileURLToPath(root);
+
+async function readAddedAtByFile() {
+  try {
+    const { stdout } = await execFileAsync('git', [
+      'log',
+      '--diff-filter=A',
+      '--format=@@%cI',
+      '--name-only',
+      '--',
+      'entries'
+    ], { cwd: repoDir });
+    const addedAt = new Map();
+    let stamp = '';
+    for (const rawLine of stdout.split(/\r?\n/)) {
+      const line = rawLine.trim();
+      if (!line) continue;
+      if (line.startsWith('@@')) {
+        stamp = line.slice(2);
+        continue;
+      }
+      if (stamp && line.startsWith('entries/') && line.endsWith('.json')) {
+        const name = line.slice('entries/'.length);
+        if (!addedAt.has(name)) addedAt.set(name, stamp);
+      }
+    }
+    return addedAt;
+  } catch (error) {
+    console.log(`::warning::追加時刻をGit履歴から取得できませんでした: ${error.message}`);
+    return new Map();
+  }
+}
 
 async function readJson(url, fallback) {
   try { return JSON.parse(await readFile(url, 'utf8')); }
@@ -33,6 +70,7 @@ function hydrateChecks(entry, checks) {
 
 async function main() {
   const checks = await readJson(checksPath, {});
+  const addedAtByFile = await readAddedAtByFile();
   const names = (await readdir(entriesDir)).filter((name) => name.endsWith('.json')).sort();
   const entries = [];
   const invalid = [];
@@ -62,7 +100,10 @@ async function main() {
       console.log(`::warning file=entries/${name}::見出し語「${entry.word}」は ${seenWords.get(entry.word)} と重複しています`);
     } else seenWords.set(entry.word, name);
 
-    entries.push(hydrateChecks(entry, checks));
+    entries.push({
+      ...hydrateChecks(entry, checks),
+      addedAt: addedAtByFile.get(name) || `${entry.date}T00:00:00+09:00`
+    });
   }
 
   entries.sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
