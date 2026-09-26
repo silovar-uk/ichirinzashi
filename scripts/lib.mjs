@@ -127,7 +127,18 @@ export function parseAozoraMainText(html) {
   const startMatch = /<div\b[^>]*class=["'][^"']*\bmain_text\b[^"']*["'][^>]*>/i.exec(source);
   if (!startMatch) throw new Error('main_text が見つかりません');
   const start = startMatch.index + startMatch[0].length;
-  const end = source.indexOf('</div>', start);
+  const divTag = /<\/?div\b[^>]*>/gi;
+  divTag.lastIndex = start;
+  let depth = 1;
+  let end = -1;
+  for (let match = divTag.exec(source); match; match = divTag.exec(source)) {
+    if (/^<\/div/i.test(match[0])) depth -= 1;
+    else depth += 1;
+    if (depth === 0) {
+      end = match.index;
+      break;
+    }
+  }
   if (end < 0) throw new Error('main_text の終端が見つかりません');
   let body = source.slice(start, end);
   body = body.replace(/<rp\b[^>]*>[\s\S]*?<\/rp>/gi, '');
