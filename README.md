@@ -35,6 +35,10 @@ node scripts/build.mjs
 
 PagesのSourceは **GitHub Actions** を使います。
 
+### 初回公開だけ
+
+新規リポジトリでは、最初の1回だけ GitHub の **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にしてください。設定後は、この workflow を再実行するか、main に push すれば公開されます。
+
 ## 毎朝の追加
 
 設定用の完成プロンプトは[`docs/PROMPT-DAILY.md`](docs/PROMPT-DAILY.md)にあります。
