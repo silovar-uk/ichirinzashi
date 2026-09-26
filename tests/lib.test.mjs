@@ -41,6 +41,12 @@ test('青空文庫HTMLからルビ読みを除き、ルビ位置を残す', () =
   assert.equal(parsed.rubyFlags.at(-3), true);
 });
 
+test('main_text 内の入れ子divを越えて本文末まで読む', () => {
+  const html = '<div class="main_text">冒頭<div class="jisage_3">字下げ</div>そのために、数ならぬ私共まで、心を痛めて居るような次第</div><div>本文外</div>';
+  const parsed = parseAozoraMainText(html);
+  assert.equal(parsed.text, '冒頭字下げそのために、数ならぬ私共まで、心を痛めて居るような次第');
+});
+
 test('引用の括弧内読みを除く', () => {
   assert.equal(normalizeQuote('拠（よんどころ）なく'), '拠なく');
   assert.equal(normalizeQuote('拠(よんどころ)なく'), '拠なく');
