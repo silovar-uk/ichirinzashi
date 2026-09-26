@@ -65,7 +65,7 @@ function visibleEntries() {
   return entries.filter((entry) => entry.date <= t);
 }
 
-function latest() { return visibleEntries()[0] ?? null; }
+function latest() { return [...visibleEntries()].sort(compareAddedDesc)[0] ?? null; }
 function md(date) { const d = parseDate(date); return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日`; }
 function mdDot(date) { const d = parseDate(date); return `${d.getUTCMonth() + 1}.${d.getUTCDate()}`; }
 function dow(date) { return DOW[parseDate(date).getUTCDay()]; }
@@ -96,7 +96,7 @@ function render() {
   const r = route();
   let html = '';
   if (!entries.length && !data.invalid.length) html = '<p class="empty">まだ一輪も届いていません。最初の一輪は、毎朝6時半ごろに届きます。</p>';
-  else if (r.name === 'home') html = isWeekend(today()) ? weekHTML() : morningHTML();
+  else if (r.name === 'home') html = isWeekend(today()) ? weekHTML({ newestFirst: true }) : morningHTML();
   else if (r.name === 'word') html = byId(r.id) ? entryHTML(byId(r.id), 'word') : '<p class="empty">その一輪は見つかりませんでした。</p>';
   else if (r.name === 'week') html = weekHTML();
   else if (r.name === 'hiku') html = hikuHTML(r.query);
@@ -223,9 +223,11 @@ function reunionActions(id) {
   return done ? `<span class="seal stamp"><b aria-hidden="true">使</b><small>${mdDot(today())}</small></span><span class="r-help">印を押しました。</span><button type="button" class="linkbtn" data-use="${esc(id)}" data-where="reunion">取り消す</button>` : `<button type="button" class="use-btn small" data-use="${esc(id)}" data-where="reunion" aria-pressed="false">使った</button><span class="r-help">使っていたら、ここで印を押せます</span>`;
 }
 
-function weekHTML() {
+function weekHTML({ newestFirst = false } = {}) {
   const { start, end } = weekRange(today());
-  const list = entries.filter((entry) => entry.date >= start && entry.date <= today()).sort((a,b) => a.date.localeCompare(b.date));
+  const list = entries
+    .filter((entry) => entry.date >= start && entry.date <= today())
+    .sort(newestFirst ? compareAddedDesc : (a, b) => a.date.localeCompare(b.date));
   if (!list.length) return '<p class="empty">今週の一輪は、まだありません。</p>';
   const idle = list.filter((entry) => !isUsed(entry.id));
   const rows = list.map((entry, index) => {
@@ -280,20 +282,14 @@ function tanaHTML() {
     if (!groups.has(entry.functionTag)) groups.set(entry.functionTag, []);
     groups.get(entry.functionTag).push(entry);
   }
-  const shelves = [...groups.entries()]
-    .map(([tag, list]) => [tag, [...list].sort(compareAddedDesc)])
-    .sort((a, b) => compareAddedDesc(a[1][0], b[1][0]));
+  const shelves = [...groups.entries()].sort((a,b) => b[1].length - a[1].length || b[1][0].date.localeCompare(a[1][0].date));
   const usedN = entries.filter((entry) => isUsed(entry.id)).length;
   return `<section class="tana"><div class="tana-sum"><p><b>${entries.length}</b>ためた語</p><p class="used"><b>${usedN}</b>使った語</p></div><div class="shelves">${shelves.map(([tag, list]) => {
-    const stems = list.flatMap((entry) => [
-      { word: entry.word, distance: entry.distance, id: entry.id, used: isUsed(entry.id), main: true },
-      ...(entry.siblings || []).map((sibling) => ({ word: sibling.word, distance: sibling.distance, id: entry.id }))
-    ]);
-    const siblingsN = stems.length - list.length;
-    return `<div class="shelf"><h2>${esc(tag)}<span>${list.length}語${siblingsN ? `・候補${siblingsN}` : ''}</span></h2><div class="shelf-row">${stems.map((stem) => `<a class="stem${stem.main ? '' : ' sib'}${stem.used ? ' used' : ''}" href="#/w/${encodeURIComponent(stem.id)}" title="時代距離 ${stem.distance}">${esc(stem.word)}</a>`).join('')}</div></div>`;
+    const siblings = list.flatMap((entry) => (entry.siblings || []).map((sibling) => ({ ...sibling, parent: entry.id })));
+    const stems = [...list.map((entry) => ({ word: entry.word, distance: entry.distance, id: entry.id, used: isUsed(entry.id), main: true })), ...siblings.map((sibling) => ({ word: sibling.word, distance: sibling.distance, id: sibling.parent }))].sort((a,b) => a.distance - b.distance || a.word.localeCompare(b.word, 'ja'));
+    return `<div class="shelf"><h2>${esc(tag)}<span>${list.length}語${siblings.length ? `・候補${siblings.length}` : ''}</span></h2><div class="shelf-row">${stems.map((stem) => `<a class="stem${stem.main ? '' : ' sib'}${stem.used ? ' used' : ''}" href="#/w/${encodeURIComponent(stem.id)}" title="時代距離 ${stem.distance}">${esc(stem.word)}</a>`).join('')}</div></div>`;
   }).join('')}</div></section>`;
 }
-
 function toggleSwap(slot) {
   const article = slot.closest('.entry');
   const entry = byId(article.dataset.id);
