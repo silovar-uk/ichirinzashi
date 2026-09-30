@@ -1,0 +1,61 @@
+{
+  "id": "2026-09-30-ikkou-o-yousuru",
+  "date": "2026-09-30",
+  "functionTag": "判断を立ち止める",
+  "function": "当然として通しそうな判断に、検討すべき余地があると差し戻す",
+  "word": "一考を要する",
+  "notation": "一考を要する",
+  "reading": "いっこうをようする",
+  "gist": "そのまま決めず、一度考える必要がある",
+  "distance": 3,
+  "plain": [
+    "一度考える必要がある",
+    "検討が必要だ",
+    "そのまま決めない方がよい",
+    "考え直す余地がある"
+  ],
+  "swap": {
+    "before": "便利だから常に既定値を置けばよい、という考え方は",
+    "plain": "一度考える必要がある",
+    "after": "。",
+    "note": "単なる反対ではなく、結論をいったん保留して検討対象へ戻す働きがある"
+  },
+  "why": "「一考を要する」は、賛否を即断せず「ここには考えるべき論点が残っている」と判断を一段戻す句系の表現。岸田國士は概念の区別の必要性に、北大路魯山人は思い込みによる選択に用いている。断定的に否定せず、しかし素通りもさせない中間の強さがあり、レビュー・企画・UI設計で小さな摩擦を置くべき地点を言語化しやすい。",
+  "citations": [
+    {
+      "quote": "これは、一考を要する問題である",
+      "author": "岸田國士",
+      "work": "未完成な現代劇",
+      "url": "https://www.aozora.gr.jp/cards/001154/files/44339_36703.html",
+      "context": "日本の演劇を論じる際、二つの概念を区別する必要が本当にあるかを再検討する場面"
+    },
+    {
+      "quote": "茶漬けであっても一考を要する",
+      "author": "北大路魯山人",
+      "work": "お茶漬けの味",
+      "url": "https://www.aozora.gr.jp/cards/001403/files/54961_48527.html",
+      "context": "価格や先入観で食べ物を選ぶ態度を、そのまま受け入れず考え直す場面"
+    }
+  ],
+  "examples": {
+    "close": "ワンタップで進めるのは便利やけど、ここだけは一考を要するな。",
+    "polite": "操作を減らす方針自体は妥当ですが、誤操作の影響が大きい箇所については一考を要します。",
+    "essay": "摩擦は少ないほどよい、とは限らない。考えずに通過できること自体が、一考を要する場合もある。"
+  },
+  "oneLine": "素通りさせてよい判断か、一考を要する。",
+  "caution": "「要する」はやや硬く、日常会話では大げさになりやすい。一方で、相手の案を否定せず検討へ戻したい文章では便利。「再考を要する」ほど否定的ではなく、最初の検討を促す語感。",
+  "refs": [
+    {
+      "label": "青空文庫「未完成な現代劇」",
+      "url": "https://www.aozora.gr.jp/cards/001154/files/44339_36703.html"
+    },
+    {
+      "label": "青空文庫「お茶漬けの味」",
+      "url": "https://www.aozora.gr.jp/cards/001403/files/54961_48527.html"
+    },
+    {
+      "label": "GOV.UK: Evidence review of Online Choice Architecture",
+      "url": "https://www.gov.uk/government/publications/online-choice-architecture-how-digital-design-can-harm-competition-and-consumers/evidence-review-of-online-choice-architecture-and-consumer-and-competition-harm"
+    }
+  ]
+}
