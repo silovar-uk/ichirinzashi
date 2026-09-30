@@ -1,0 +1,61 @@
+{
+  "id": "2026-09-30-manzen",
+  "date": "2026-09-30",
+  "functionTag": "惰性を見抜く",
+  "function": "目的や判断基準を持たず、流れのまま進んでいる状態を言い表す",
+  "word": "漫然",
+  "notation": "漫然",
+  "reading": "まんぜん",
+  "gist": "目的や意識が薄いまま、なんとなく進む",
+  "distance": 2,
+  "plain": [
+    "なんとなく",
+    "目的なく",
+    "深く考えずに",
+    "流れのままに"
+  ],
+  "swap": {
+    "before": "選択肢があるのに、",
+    "plain": "流れのままに",
+    "after": "既定値を受け入れてしまう。",
+    "note": "単なる「ぼんやり」より、方針や問題意識を持たず惰性で進む響きがある"
+  },
+  "why": "「漫然」は、注意不足そのものより、目的・方針・判断軸を置かないまま行為が続く状態を短く指せる単語系の表現。漱石は研究や社会の見方に、豊島与志雄は論文の進み方に用いており、思考や行動が惰性化していることを批評する語として働く。現代の設計でも、既定値があるために利用者が考えず進む状態を「漫然と選ぶ」と表せる。",
+  "citations": [
+    {
+      "quote": "中間はただ漫然と平面的に歩き廻るだけである",
+      "author": "豊島与志雄",
+      "work": "文学に於ける構想力",
+      "url": "https://www.aozora.gr.jp/cards/000906/files/42577_22904.html",
+      "context": "論文が構想を欠き、同じ地点を目的なく進む状態を批評する場面"
+    },
+    {
+      "quote": "社会は今まで科学界をただ漫然と暗く眺めていた",
+      "author": "夏目漱石",
+      "work": "学者と名誉",
+      "url": "https://www.aozora.gr.jp/cards/000148/files/2383_13558.html",
+      "context": "社会が科学者の仕事を比較・評価せず、漠然と見ていた状態を述べる場面"
+    }
+  ],
+  "examples": {
+    "close": "未分類に入れる前に、漫然と押してないかだけ見直す。",
+    "polite": "従来の運用を漫然と継続せず、目的と判断基準を改めて確認します。",
+    "essay": "便利さは、ときに判断を消す。人は選んでいるつもりで、漫然と既定値の上を歩いている。"
+  },
+  "oneLine": "流れが速いときほど、漫然と選んでいないかを見る。",
+  "caution": "「漫然」は、人や態度を批判する響きを帯びやすい。相手に直接ぶつけるより、自分たちの運用・議論・観察のあり方を点検する文脈で使うと収まりがよい。",
+  "refs": [
+    {
+      "label": "青空文庫「文学に於ける構想力」",
+      "url": "https://www.aozora.gr.jp/cards/000906/files/42577_22904.html"
+    },
+    {
+      "label": "青空文庫「学者と名誉」",
+      "url": "https://www.aozora.gr.jp/cards/000148/files/2383_13558.html"
+    },
+    {
+      "label": "Columbia Business School: When and why defaults influence decisions",
+      "url": "https://business.columbia.edu/faculty/research/when-and-why-defaults-influence-decisions-meta-analysis-default-effects"
+    }
+  ]
+}
