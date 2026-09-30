@@ -1,0 +1,61 @@
+{
+  "id": "2026-09-30-tareri-to-sezu",
+  "date": "2026-09-30",
+  "functionTag": "十分と見なさない",
+  "function": "一応の到達点を終点とせず、その先に不足や次の課題を見る",
+  "word": "足れりとせず",
+  "notation": "足れりとせず",
+  "reading": "たれりとせず",
+  "gist": "それで十分とはせず、さらに先を見る",
+  "distance": 4,
+  "plain": [
+    "それで十分とはしない",
+    "そこで満足しない",
+    "それだけで済ませない",
+    "さらに先を見る"
+  ],
+  "swap": {
+    "before": "保存できることだけをもって",
+    "plain": "それで十分とはしない",
+    "after": "。あとで探しやすいところまで設計する。",
+    "note": "現在の達成を認めつつ、それを最終的な十分条件とは見なさない構文"
+  },
+  "why": "「足れりとせず」は、ある達成・条件・説明を「一応はあるが、それだけでは十分でない」と位置づける構文系の表現。幸田露伴や永井荷風では、すでに相当なところまで進んでもなお満足しない動きを表す。現代文では「Aをもって足れりとせず、Bまで見る」の形にすると、最低条件と望ましい到達点を切り分けられる。単なる向上心だけでなく、十分条件を再定義する思考に向く。",
+  "citations": [
+    {
+      "quote": "人の奇を好むや、猶以て足れりとせず",
+      "author": "幸田露伴",
+      "work": "運命",
+      "url": "https://www.aozora.gr.jp/cards/000051/files/1452_16991.html",
+      "context": "現実の奇だけでは満足せず、さらに虚構を作り出す人間の性向を述べる場面"
+    },
+    {
+      "quote": "十八省に遍くして猶足れりとせず",
+      "author": "永井荷風",
+      "work": "来青花",
+      "url": "https://www.aozora.gr.jp/cards/001341/files/50291_37759.html",
+      "context": "広く旅した後も満足せず、異郷の花木まで持ち帰った父の徹底ぶりを語る場面"
+    }
+  ],
+  "examples": {
+    "close": "とりあえず保存できた、をもって足れりとせず、あとで見つかる形まで整えたい。",
+    "polite": "機能の実装をもって足れりとせず、利用時の迷いが減ったかまで確認します。",
+    "essay": "設計は、動けば終わりではない。成立をもって足れりとせず、使う人の判断まで届いて初めて形になる。"
+  },
+  "oneLine": "できた、をもって足れりとせず、使えたところまで見る。",
+  "caution": "向上心を示す一方、際限のない要求や欲深さを表す文脈にも使われる。何を最低条件とし、どこまでを次の到達点とするのかを併記すると、精神論になりにくい。",
+  "refs": [
+    {
+      "label": "青空文庫「運命」",
+      "url": "https://www.aozora.gr.jp/cards/000051/files/1452_16991.html"
+    },
+    {
+      "label": "青空文庫「来青花」",
+      "url": "https://www.aozora.gr.jp/cards/001341/files/50291_37759.html"
+    },
+    {
+      "label": "GOV.UK: Evidence review of Online Choice Architecture",
+      "url": "https://www.gov.uk/government/publications/online-choice-architecture-how-digital-design-can-harm-competition-and-consumers/evidence-review-of-online-choice-architecture-and-consumer-and-competition-harm"
+    }
+  ]
+}
